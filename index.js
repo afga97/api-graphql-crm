@@ -1,10 +1,8 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
-import schema from './schema'; // GrapHql
-import resolvers from './resolvers';
+import { schema } from './data/schema';
 
 const app = express();
-const root = resolvers;
 
 app.get('/', (req, res) => {
     res.send('Todo listo');
@@ -12,7 +10,6 @@ app.get('/', (req, res) => {
 
 app.use('/graphql', graphqlHTTP({
     schema,
-    rootValue: root,
     graphiql: true
 }));
-app.listen(3001, () => console.log('Express corriendo por el puerto 8000'))
+app.listen(3001, () => console.log('Express corriendo por el puerto 3001'))

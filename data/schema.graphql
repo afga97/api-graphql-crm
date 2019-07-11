@@ -1,6 +1,3 @@
-import { buildSchema } from 'graphql';
-
-const schema = buildSchema(`
     type Cliente {
         id: ID
         nombre: String
@@ -55,7 +52,5 @@ const schema = buildSchema(`
         #Nombre del resolver, input con datos y valor de retornado
         """ Permite crear nuevos clientes """
         crearCliente(input: ClienteInput): Cliente
+        actualizarCliente(input: ClienteInput): Cliente
     }
-`);
-
-export default schema;
