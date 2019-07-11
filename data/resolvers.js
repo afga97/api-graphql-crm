@@ -3,8 +3,13 @@ import { Clientes } from './db';
 
 export const resolvers = {
 	Query: {
-		getCliente: ({ id }) => {
-			return new Cliente(id, clientesDB[id]);
+		getClientes: (_, { limite }) => {
+			return Clientes.find().limit(limite)
+		},
+		getCliente: (_,{ limite }) => {
+			return new Promise((resolve, reject) => {
+				Clientes.find({}).limit(limite)
+			})
 		}
 	},
 	Mutation: {
@@ -34,6 +39,14 @@ export const resolvers = {
 					
 				});
 			});
+		},
+		eliminarCliente: (root, { id }) => {
+			return new Promise((resolve, reject) => {
+				Clientes.findOneAndRemove( { _id : id}, (error) => {
+					if(error) reject(error)
+					else resolve("Se elimino correctamente")
+				})
+			})
 		}
 	}
 };

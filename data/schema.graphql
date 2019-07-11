@@ -9,6 +9,7 @@
         pedidos: [Pedido]
     }
     type Query {
+        getClientes(limite: Int): [Cliente]
         getCliente(id: ID): Cliente
     }
     
@@ -53,4 +54,5 @@
         """ Permite crear nuevos clientes """
         crearCliente(input: ClienteInput): Cliente
         actualizarCliente(input: ClienteInput): Cliente
-    }
+        eliminarCliente(id: String): String
+}           
