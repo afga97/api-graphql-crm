@@ -3,7 +3,7 @@
         nombre: String
         apellido: String
         empresa: String
-        email: String
+        emails: [Emails]
         edad: Int
         tipo: TipoCliente
         pedidos: [Pedido]
@@ -43,7 +43,7 @@
         nombre: String!
         apellido: String!
         empresa: String!
-        email: String!
+        emails: [EmailInput]
         edad: Int!
         tipo: TipoCliente!
         pedidos: [PedidoInput]
