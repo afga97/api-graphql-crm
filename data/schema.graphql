@@ -3,14 +3,10 @@
         nombre: String
         apellido: String
         empresa: String
-        emails: [Emails]
+        email: String
         edad: Int
         tipo: TipoCliente
         pedidos: [Pedido]
-    }
-    type Query {
-        getClientes(limite: Int): [Cliente]
-        getCliente(id: ID): Cliente
     }
     
     type Emails {
@@ -25,6 +21,11 @@
     enum TipoCliente {
         BASICO
         PREMIUM
+    }
+
+    type Query {
+        getClientes(limite: Int): [Cliente]
+        getCliente(id: ID): Cliente
     }
 
     input PedidoInput {
@@ -42,10 +43,10 @@
         nombre: String!
         apellido: String!
         empresa: String!
-        emails: [EmailInput]!
+        email: String!
         edad: Int!
         tipo: TipoCliente!
-        pedidos: [PedidoInput]!
+        pedidos: [PedidoInput]
     }
 
     """ Mutation para crear clientes """

@@ -1,15 +1,12 @@
 import express from 'express';
-import graphqlHTTP from 'express-graphql';
-import { schema } from './data/schema';
+import { ApolloServer } from 'apollo-server-express';
+import { typeDefs } from './data/schema';
+import { resolvers } from './data/resolvers' ;
 
 const app = express();
 
-app.get('/', (req, res) => {
-    res.send('Todo listo');
-});
+const server = new ApolloServer({typeDefs, resolvers});
 
-app.use('/graphql', graphqlHTTP({
-    schema,
-    graphiql: true
-}));
-app.listen(3001, () => console.log('Express corriendo por el puerto 3001'))
+server.applyMiddleware({app});
+
+app.listen({port: 4000}, () => console.log(`Servidor corriendo en el puerto ${4000} ${server.graphqlPath}`));

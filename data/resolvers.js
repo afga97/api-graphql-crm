@@ -6,10 +6,13 @@ export const resolvers = {
 		getClientes: (_, { limite }) => {
 			return Clientes.find().limit(limite)
 		},
-		getCliente: (_,{ limite }) => {
+		getCliente: (_,{ id }) => {
 			return new Promise((resolve, reject) => {
-				Clientes.find({}).limit(limite)
-			})
+				Clientes.findById(id, (error, cliente) => {
+					if (error) reject(error)
+					else resolve(cliente)
+				});
+			});
 		}
 	},
 	Mutation: {
@@ -17,7 +20,7 @@ export const resolvers = {
 			const newClient = new Clientes({
 				nombre: input.nombre,
 				apellido: input.apellido,
-				emails: input.emails,
+				email: input.email,
 				empresa: input.empresa,
 				edad: input.edad,
 				tipo: input.tipo,

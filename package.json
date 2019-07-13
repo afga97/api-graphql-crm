@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./index.js --exec babel-node -e graphql js"
+    "start": "nodemon ./index.js -e js --exec babel-node"
   },
   "author": "Andres Giraldo",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-express": "^2.6.9",
     "express": "^4.17.1",
     "express-graphql": "^0.8.0",
     "graphql": "^14.4.2",
