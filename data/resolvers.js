@@ -35,7 +35,7 @@ export const resolvers = {
             });
 		},
 		actualizarCliente: (root, { input }) => {
-			return new Promise((resolve, object) => {
+			return new Promise((resolve, reject) => {
 				Clientes.findOneAndUpdate( { _id : input.id } , input, { new: true}, (error, cliente) => {
 					if(error) reject(error)
 					else resolve(cliente)

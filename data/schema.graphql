@@ -55,5 +55,5 @@
         """ Permite crear nuevos clientes """
         crearCliente(input: ClienteInput): Cliente
         actualizarCliente(input: ClienteInput): Cliente
-        eliminarCliente(id: String): String
+        eliminarCliente(id: ID): String
 }           
