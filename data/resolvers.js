@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Clientes } from './db';
+import { Clientes, Productos } from './db';
 
 export const resolvers = {
 	Query: {
@@ -21,10 +21,21 @@ export const resolvers = {
 					else resolve(count)
 				})
 			})
+		},
+		getProductos: (_, { limite, offset}) => {
+			return Productos.find().limit(limite).skip(offset)
+		},
+		getProducto: (_, { id }) => {
+			return new Promise((resolve, reject) => {
+				Productos.findById(id, (error, producto) => {
+					if (error) reject(error)
+					else resolve(producto)
+				});
+			})
 		}
 	},
 	Mutation: {
-		crearCliente: (root, { input }) => {
+		crearCliente: (_, { input }) => {
 			const newClient = new Clientes({
 				nombre: input.nombre,
 				apellido: input.apellido,
@@ -42,7 +53,7 @@ export const resolvers = {
                 })
             });
 		},
-		actualizarCliente: (root, { input }) => {
+		actualizarCliente: (_, { input }) => {
 			return new Promise((resolve, reject) => {
 				Clientes.findOneAndUpdate( { _id : input.id } , input, { new: true}, (error, cliente) => {
 					if(error) reject(error)
@@ -51,10 +62,40 @@ export const resolvers = {
 				});
 			});
 		},
-		eliminarCliente: (root, { id }) => {
+		eliminarCliente: (_, { id }) => {
 			return new Promise((resolve, reject) => {
 				Clientes.findOneAndRemove( { _id : id}, (error) => {
 					if(error) reject(error)
+					else resolve("Se elimino correctamente")
+				})
+			})
+		},
+		nuevoProducto: (_, { input }) => {
+			const producto = new Productos({
+				nombre: input.nombre,
+				precio: input.precio,
+				stock: input.stock
+			})
+			producto.id = producto._id;
+			return new Promise((resolve, reject) => {
+				producto.save((error) => {
+					if (error) reject(error)
+					else resolve(producto)
+				})
+			});
+		},
+		actualizarProducto: (_, { input }) => {
+			return new Promise((resolve, reject) => {
+				Productos.findOneAndUpdate( {_id: input.id}, input, { new: true}, (error, producto) => {
+					if(error) reject(error)
+					else resolve(producto)
+				});
+			})
+		},
+		eliminarProducto: (_, { id }) => {
+			return new Promise((resolve, reject) => {
+				Productos.findOneAndRemove( { _id: id }, (error) => {
+					if (error) reject(error)
 					else resolve("Se elimino correctamente")
 				})
 			})
