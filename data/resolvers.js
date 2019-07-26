@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Clientes, Productos } from './db';
+import { Clientes, Productos, Pedidos } from './db';
 
 export const resolvers = {
 	Query: {
@@ -41,6 +41,14 @@ export const resolvers = {
 				})
 			})
 		},
+		getPedidos: (root) => {
+			return new Promise((resolve, reject) => {
+				Pedidos.find().populate('cliente').exec((error, pedidos) => {
+					if (error) reject(error)
+					else resolve(pedidos)
+				})
+			})
+		}		
 	},
 	Mutation: {
 		crearCliente: (_, { input }) => {
@@ -107,6 +115,38 @@ export const resolvers = {
 					else resolve("Se elimino correctamente")
 				})
 			})
+		},
+		nuevoPedido: (_, { input }) => {
+			const nuevoPedido = new Pedidos({
+				pedido: input.pedido,
+				fecha: new Date(),
+				total: input.total,
+				cliente: input.cliente,
+				estado: "PENDIENTE"
+			});
+			nuevoPedido.id = nuevoPedido._id;
+			return new Promise( (resolve, reject) => {
+				input.pedido.forEach(pedido => {
+					Productos.updateOne({_id: pedido.id}, 
+						{
+							"$inc":
+								{ "stock": -pedido.cantidad }
+						}, (error) => {
+							if (error ) return new Error(error)
+						}
+					)
+				})
+
+				nuevoPedido.save( (error) => {
+					if(error) reject(error)	
+					Pedidos.findById(nuevoPedido._id).populate('cliente')
+						.exec(( error, pedido) => {
+							if (error) reject(error)
+							// pedido['errors'] = errors
+							resolve(pedido)
+					})
+				})
+			});
 		}
 	}
 };
