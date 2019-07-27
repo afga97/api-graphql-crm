@@ -22,8 +22,12 @@ export const resolvers = {
 				})
 			})
 		},
-		getProductos: (_, { limite, offset}) => {
-			return Productos.find().limit(limite).skip(offset)
+		getProductos: (_, { limite, offset, stock}) => {
+			let filtro;
+			if (stock) {
+				filtro = { stock: {$gt : 0} };
+			}
+			return Productos.find(filtro).limit(limite).skip(offset)
 		},
 		getProducto: (_, { id }) => {
 			return new Promise((resolve, reject) => {
