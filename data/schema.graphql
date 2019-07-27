@@ -61,7 +61,7 @@
         getProducto(id: ID): Producto
         totalProductos: String
 
-        getPedidos: [Pedido]
+        getPedidos(cliente: String): [Pedido]
     }
     
     input PedidoInput {
@@ -119,4 +119,5 @@
         eliminarProducto(id: ID): String
 
         nuevoPedido(input: PedidoInput): Pedido
+        actualizarEstado(input: PedidoInput): String
 }           

@@ -45,9 +45,9 @@ export const resolvers = {
 				})
 			})
 		},
-		getPedidos: (root) => {
+		getPedidos: (_, {cliente}) => {
 			return new Promise((resolve, reject) => {
-				Pedidos.find().populate('cliente').exec((error, pedidos) => {
+				Pedidos.find({cliente: cliente}).populate('cliente').exec((error, pedidos) => {
 					if (error) reject(error)
 					else resolve(pedidos)
 				})
@@ -151,6 +151,14 @@ export const resolvers = {
 					})
 				})
 			});
+		},
+		actualizarEstado: (_, {input}) => {
+			return new Promise((resolve, reject) => {
+				Pedidos.findOneAndUpdate({_id: input.id}, input, {new:false}, (error) => {
+					if (error) reject(error);
+					else resolve("Se actualizó correctamente")
+				})
+			})
 		}
 	}
 };
