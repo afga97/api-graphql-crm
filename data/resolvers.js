@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { Clientes, Productos, Pedidos } from './db';
 
 export const resolvers = {
@@ -52,7 +51,39 @@ export const resolvers = {
 					else resolve(pedidos)
 				})
 			})
-		}		
+		},
+		topClientes: (_) => {
+			return new Promise((resolve, reject) => {
+				Pedidos.aggregate([
+					{
+						$match: { estado: "COMPLETADO" }
+					},
+					{
+						$group: {
+							_id : "$cliente",
+							total: { $sum : "$total" }
+						}
+					},
+					{
+						$lookup: {
+							from: "clientes",
+							localField: '_id',
+							foreignField: '_id',
+							as: 'cliente'
+						}
+					},
+					{
+						$sort: { total : -1 }
+					},
+					{
+						$limit: 10
+					}	
+				], (error, clientes) => {
+					if (error) reject(error)
+					else resolve(clientes)
+				})
+			})
+		}
 	},
 	Mutation: {
 		crearCliente: (_, { input }) => {
@@ -130,17 +161,6 @@ export const resolvers = {
 			});
 			nuevoPedido.id = nuevoPedido._id;
 			return new Promise( (resolve, reject) => {
-				input.pedido.forEach(pedido => {
-					Productos.updateOne({_id: pedido.id}, 
-						{
-							"$inc":
-								{ "stock": -pedido.cantidad }
-						}, (error) => {
-							if (error ) return new Error(error)
-						}
-					)
-				})
-
 				nuevoPedido.save( (error) => {
 					if(error) reject(error)	
 					Pedidos.findById(nuevoPedido._id).populate('cliente')
@@ -154,6 +174,26 @@ export const resolvers = {
 		},
 		actualizarEstado: (_, {input}) => {
 			return new Promise((resolve, reject) => {
+
+				const { estado } = input;
+				let instruccion;
+				if (estado === 'COMPLETADO') {
+					instruccion = '-';
+				} else if (estado === 'CANCELADO'){
+					instruccion = '+';
+				}
+
+				input.pedido.forEach(pedido => {
+					Productos.updateOne({_id: pedido.id}, 
+						{
+							"$inc":
+								{ "stock": `${instruccion}${pedido.cantidad}` }
+						}, (error) => {
+							if (error ) return new Error(error)
+						}
+					)
+				})
+				
 				Pedidos.findOneAndUpdate({_id: input.id}, input, {new:false}, (error) => {
 					if (error) reject(error);
 					else resolve("Se actualizó correctamente")

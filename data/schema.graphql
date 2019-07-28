@@ -39,6 +39,10 @@
         estado: EstadoPedido
     }
 
+    type ClienteTotal {
+        cliente: [Cliente]
+        total: Float
+    }
 
     enum TipoCliente {
         BASICO
@@ -62,6 +66,7 @@
         totalProductos: String
 
         getPedidos(cliente: String): [Pedido]
+        topClientes: [ClienteTotal]
     }
     
     input PedidoInput {
